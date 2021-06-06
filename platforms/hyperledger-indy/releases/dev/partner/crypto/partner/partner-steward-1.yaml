@@ -1,0 +1,31 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: partner-partner-steward-1
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: partner-ns
+spec:
+  releaseName: partner-partner-steward-1
+  chart:
+    path: platforms/hyperledger-indy/charts/indy-key-mgmt
+    git: https://github.com/savydevsoft/blockchain-automation-framework.git
+    ref: master
+  values:
+    metadata:
+      name: partner-partner-steward-1
+      namespace: partner-ns
+    network:
+      name: indy
+    image:
+      name: partner
+      repository: index.docker.io/hyperledgerlabs/indy-key-mgmt:1.11.0
+      pullSecret: regcred
+    vault:
+      address: http://a33d597269aea474aa5475dc4f7cbda4-205388225.us-east-2.elb.amazonaws.com:8200
+      keyPath: partner.stewards
+      identity: partner-steward-1
+      auth_path: kubernetes-partner-admin-auth
+    account:
+      service: partner-admin-vault-auth
+      role: rw
