@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: crowdkeep-baf-ac-vault-auth-role-binding
+  namespace: crowdkeep-ns
+  labels:
+    organization: crowdkeep
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: crowdkeep-baf-ac-vault-auth
+  namespace: crowdkeep-ns
