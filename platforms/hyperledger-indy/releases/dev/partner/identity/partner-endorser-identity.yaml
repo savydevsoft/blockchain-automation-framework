@@ -1,0 +1,43 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: partner-partner-endorser-transaction
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: partner-ns
+spec:
+  releaseName: partner-partner-endorser-transaction
+  chart:
+    path: platforms/hyperledger-indy/charts/indy-ledger-txn
+    git: https://github.com/savydevsoft/blockchain-automation-framework.git
+    ref: master
+  values:
+    metadata:
+      name: partner-partner-endorser-transaction
+      namespace: partner-ns
+    network:
+      name: indy
+    image:
+      cli:
+        name: partner
+        repository: index.docker.io/hyperledgerlabs/indy-ledger-txn:latest
+        pullSecret: regcred
+    vault:
+      address: http://a33d597269aea474aa5475dc4f7cbda4-205388225.us-east-2.elb.amazonaws.com:8200
+      role: rw
+      serviceAccountName: partner-admin-vault-auth
+      auth_path: kubernetes-partner-admin-auth
+    organization:
+      name: partner
+      adminIdentity:
+        name: softtik-trustee
+        did: FsA9LRiaXxPoEReE3t43pJ
+        path: softtik/trustees
+      newIdentity:
+        name: partner-endorser
+        role: ENDORSER
+        did: XZZPcDLGz5vkvuYZBj8jBb
+        verkey: Hf74soiqXRAt56tXM5NxydtUNu27YqtuXKnGJ5X7PV8Q
+        path: partner/endorsers
+    node:
+      name: partner
