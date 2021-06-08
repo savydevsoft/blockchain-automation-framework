@@ -1,0 +1,43 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: softtik-webserver
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: softtik-ns
+spec:
+  releaseName: softtik-webserver
+  chart:
+    path: examples/identity-app/charts/webserver
+    git: https://github.com/savydevsoft/blockchain-automation-framework.git
+    ref: master
+  values:
+    metadata:
+      namespace: softtik-ns
+      name: softtik-webserver
+    organization:
+      name: softtik
+    image:
+      pullSecret: regcred
+      init:
+        name: softtik-webserver-init
+        repository: alpine:3.9.4
+      server:
+        name: softtik-webserver
+        repository: index.docker.io/sownak/von-network-base:1.11.0
+    service:
+      port: 8000
+    vault:
+      address: http://a33d597269aea474aa5475dc4f7cbda4-205388225.us-east-2.elb.amazonaws.com:8200
+      serviceAccountName: softtik-softtik-trustee-vault-auth
+      authPath: kubernetes-softtik-softtik-trustee-auth
+      trusteeName: softtik-trustee
+      role: ro
+    storage:
+      size: 128Mi
+      className: softtik-aws-baremetal-storageclass
+    proxy:
+      
+      provider: "ambassador"
+      external_url: softtik-webserver.indy.keepexchange.com
+      port: 15010
